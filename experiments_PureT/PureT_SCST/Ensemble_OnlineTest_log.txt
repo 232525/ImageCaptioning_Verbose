@@ -1,0 +1,2 @@
+[INFO: 2024-05-30 16:41:32,089] sub model loaded from experiments_PureT/PureT_SCST/snapshot/caption_model_27.pth
+[INFO: 2024-05-30 16:41:33,169] sub model loaded from experiments_PureT/PureT_SCST/snapshot/caption_model_27.pth

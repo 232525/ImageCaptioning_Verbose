@@ -1,0 +1,12 @@
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
+mscoco/feature
+mscoco/misc
+mscoco/sent
+mscoco/txt
+coco_caption/pycocoevalcap/spice/cache/
+coco_caption/pycocoevalcap/spice/lib/stanford-corenlp-3.6.0-models.jar
+coco_caption/pycocoevalcap/spice/lib/stanford-corenlp-3.6.0.jar
+coco_caption/pycocoevalcap/spice/tmp/
+*.pth
