@@ -305,3 +305,36 @@ class PureT(BasicModel):
         # flops += self.decoder.flops()
         return flops
     
+from models.encoder_decoder.RawT_encoder import Encoder as RawT_Encoder
+    
+class RawTransformer(PureT):
+    def __init__(self):
+        super(RawTransformer, self).__init__()
+        self.vocab_size = cfg.MODEL.VOCAB_SIZE + 1
+        use_gx = False
+        
+        del self.encoder
+        del self.decoder
+        
+        # 对于wo_window，部分参数无作用，仅为了保持API一致
+        self.encoder = RawT_Encoder(
+            dim = cfg.MODEL.ATT_FEATS_EMBED_DIM, 
+            input_resolution = (12, 12), 
+            depth = cfg.MODEL.BILINEAR.ENCODE_LAYERS, 
+            num_heads = cfg.MODEL.BILINEAR.HEAD, 
+            window_size = 6,  # =12 SW-MSA/W-MSA退化为普通MSA
+            shift_size = 3,    # =0  无SW-MSA，仅W-MSA
+            mlp_ratio = 4,
+            drop = 0.1,
+            use_gx = use_gx
+        )
+        
+        self.decoder = Decoder(
+            vocab_size = self.vocab_size, 
+            embed_dim = cfg.MODEL.BILINEAR.DIM, 
+            depth = cfg.MODEL.BILINEAR.DECODE_LAYERS,
+            num_heads = cfg.MODEL.BILINEAR.HEAD, 
+            dropout = cfg.MODEL.BILINEAR.DECODE_DROPOUT, 
+            ff_dropout = cfg.MODEL.BILINEAR.DECODE_FF_DROPOUT,
+            use_gx = use_gx
+        )
