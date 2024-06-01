@@ -10,3 +10,4 @@ coco_caption/pycocoevalcap/spice/lib/stanford-corenlp-3.6.0-models.jar
 coco_caption/pycocoevalcap/spice/lib/stanford-corenlp-3.6.0.jar
 coco_caption/pycocoevalcap/spice/tmp/
 *.pth
+/data/temp/tmp*

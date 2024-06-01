@@ -2,11 +2,11 @@
 PyTorch implementation for Image Captioning, supporting single or multi-gpus training, and inference with a single model or ensemble of multiple models.
 
 __This repo is a version that uses pre-extracted features for training and testing.__
-- [x] Raw Transformer
+- [x] Raw Transformer as encoder and decoder
 - [x] PureT: [[Paper]](https://arxiv.org/abs/2203.15350), [[Source Code]](https://github.com/232525/PureT)
 - [x] XLAN and XTransformer: [[Paper]](https://arxiv.org/abs/2003.14080), [[Source Code]](https://github.com/JDAI-CV/image-captioning)
-- [ ] UpDown
-- [ ] M2 Transformer
+- [x] UpDown: [[Paper]](https://arxiv.org/abs/1707.07998), [[Source Code]](https://github.com/peteanderson80/up-down-captioner)
+- [ ] M2 Transformer: [[Paper]](https://arxiv.org/abs/1912.08226), [[Source Code]](https://github.com/aimagelab/meshed-memory-transformer)
 
 ## Requirements (Our Main Enviroment)
 + Python 3.10.11
