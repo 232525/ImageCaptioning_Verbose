@@ -18,7 +18,6 @@ import lib.utils as utils
 class AttEnsembleModel(AttBasicModel):
     def __init__(self, models, weights=None):
         BasicModel.__init__(self)
-        # super(AttEnsembleModel, self).__init__()
 
         self.models = nn.ModuleList(models)           # Ensemble的每个子模型
         self.vocab_size = cfg.MODEL.VOCAB_SIZE + 1    # include <BOS>/<EOS>
@@ -34,6 +33,10 @@ class AttEnsembleModel(AttBasicModel):
     # 把state展成单层的list
     def pack_state(self, state):
         return sum([list(_) for _ in state], [])
+
+    def expand_tensor(self, x, beam_size):
+        x = [utils.expand_tensor(_, beam_size) for _ in x]
+        return x
 
     def get_logprobs_state(self, **kwargs):
         # 集成模型的前向预测函数，需要分别调用每一个子模型的get_logprobs_state函数
@@ -82,11 +85,12 @@ class AttEnsembleModel(AttBasicModel):
         return tuple(zip(*[m.module.preprocess(**kwargs) for m in self.models]))
     
     def decode_beam(self, **kwargs):
+        beam_size = kwargs['BEAM_SIZE']
+        att_feats = kwargs[cfg.PARAM.ATT_FEATS]
+        batch_size = att_feats.size(0)
+
         # 输入数据预处理
         gv_feat, att_feats, att_mask, p_att_feats = self.preprocess(**kwargs)
-        
-        beam_size = kwargs['BEAM_SIZE']
-        batch_size = att_feats.size(0)
         
         seq_logprob = torch.zeros(batch_size, 1, 1, device='cuda')
         log_probs = []
@@ -98,6 +102,7 @@ class AttEnsembleModel(AttBasicModel):
         kwargs[cfg.PARAM.ATT_FEATS] = att_feats
         kwargs[cfg.PARAM.GLOBAL_FEAT] = gv_feat
         kwargs[cfg.PARAM.P_ATT_FEATS] = p_att_feats
+        kwargs[cfg.PARAM.ATT_FEATS_MASK] = att_mask
 
         outputs = []
         for t in range(cfg.MODEL.SEQ_LEN):
@@ -141,10 +146,10 @@ class AttEnsembleModel(AttBasicModel):
             wt = selected_words.squeeze(-1)
 
             if t == 0:
-                att_feats = utils.expand_tensor(att_feats, beam_size)
-                gv_feat = utils.expand_tensor(gv_feat, beam_size)
-                att_mask = utils.expand_tensor(att_mask, beam_size)
-                p_att_feats = utils.expand_tensor(p_att_feats, beam_size)
+                att_feats = self.expand_tensor(att_feats, beam_size)
+                gv_feat = self.expand_tensor(gv_feat, beam_size)
+                att_mask = self.expand_tensor(att_mask, beam_size)
+                p_att_feats = self.expand_tensor(p_att_feats, beam_size)
 
                 kwargs[cfg.PARAM.ATT_FEATS] = att_feats
                 kwargs[cfg.PARAM.GLOBAL_FEAT] = gv_feat
@@ -205,7 +210,6 @@ class AttEnsembleModel(AttBasicModel):
 class AttEnsembleTransformer(BasicModel):
     def __init__(self, models, weights=None):
         BasicModel.__init__(self)
-        # super(AttEnsembleModel, self).__init__()
 
         self.models = nn.ModuleList(models)           # Ensemble的每个子模型
         self.vocab_size = cfg.MODEL.VOCAB_SIZE + 1    # include <BOS>/<EOS>
@@ -283,18 +287,18 @@ class AttEnsembleTransformer(BasicModel):
         # print(logprobs.size(), len(state), state[0][0].size())
         return logprobs, state
 
-    def preprocess(self, att_feats):
+    def preprocess(self, att_feats, att_mask):
         # 集成模型的特征预处理，分别调用每一个子模型的特征预处理函数
         # 返回 gv_feat, att_feats, att_mask, p_att_feats
         # 每个分量都是一个tuple，长度为self.models的个数
         # 如：gv_feat[i] 表示self.models中第i个子模型的gv_feat输出
-        def _encode(m, x):
+        def _encode(m, x, mask):
             # 针对end-to-end模型，包含backbone encoder部分
             if hasattr(m.module, "backbone"):
                 x = m.module.backbone(x)
-            x = m.module.encoder(m.module.att_embed(x))
+            x = m.module.encoder(m.module.att_embed(x), mask)
             return x
-        return tuple(zip(*[_encode(m, att_feats) for m in self.models]))
+        return tuple(zip(*[_encode(m, att_feats, att_mask) for m in self.models]))
     
     def expand_tensor(self, x, beam_size):
         x = [utils.expand_tensor(_, beam_size) for _ in x]
@@ -326,7 +330,7 @@ class AttEnsembleTransformer(BasicModel):
         
         # Transformer 各个子模型 Encoder 部分前向计算
         # 即：为每一个子模型准备输入数据
-        gx, encoder_out = self.preprocess(att_feats)
+        gx, encoder_out = self.preprocess(att_feats, att_mask)
         # batch_size = gx[0].size(0)  # gv_feat为所有子模型gv_feat的Tuple，因此需要随意指定一个indx获取batch_size
 
         state = self.init_hidden(batch_size)

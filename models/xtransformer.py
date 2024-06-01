@@ -34,7 +34,6 @@ class XTransformer(BasicModel):
             sequential.append(nn.Dropout(cfg.MODEL.DROPOUT_ATT_EMBED))    
         self.att_embed = nn.Sequential(*sequential) if len(sequential) > 0 else None
 
-        # """
         self.encoder = Encoder(
             embed_dim = cfg.MODEL.BILINEAR.DIM, 
             dropout = cfg.MODEL.BILINEAR.ENCODE_DROPOUT, 
@@ -46,22 +45,7 @@ class XTransformer(BasicModel):
             bifeat_emb_drop = cfg.MODEL.BILINEAR.ENCODE_BIFEAT_EMB_DROPOUT,
             ff_dropout = cfg.MODEL.BILINEAR.ENCODE_FF_DROPOUT,
             layer_num = cfg.MODEL.BILINEAR.ENCODE_LAYERS)
-        # """
-        """
-        self.encoder = Encoder(
-            embed_dim = 768, 
-            dropout = cfg.MODEL.BILINEAR.ENCODE_DROPOUT, # 0.5
-            att_type = cfg.MODEL.BILINEAR.ATTTYPE,       # 'SCAtt'
-            att_heads = cfg.MODEL.BILINEAR.HEAD,         # 8
-            att_mid_dim = [96, 48, 96], 
-            att_mid_drop = 0.1, 
-            bifeat_emb_act = 'RELU', 
-            bifeat_emb_drop = 0.1,
-            ff_dropout = 0.5,
-            layer_num = 6)
-        """
         
-        # """
         self.decoder = Decoder(            
             vocab_size = self.vocab_size, 
             embed_dim = cfg.MODEL.BILINEAR.DIM, 
@@ -74,22 +58,6 @@ class XTransformer(BasicModel):
             bifeat_emb_drop = cfg.MODEL.BILINEAR.DECODE_BIFEAT_EMB_DROPOUT, 
             ff_dropout = cfg.MODEL.BILINEAR.DECODE_FF_DROPOUT,
             layer_num = cfg.MODEL.BILINEAR.DECODE_LAYERS)
-        # """
-        """
-        self.decoder = Decoder(            
-            vocab_size = self.vocab_size,           # 9487 + 1
-            embed_dim = 768, 
-            dropout = 0.1, 
-            att_type = cfg.MODEL.BILINEAR.ATTTYPE,  # 'SCAtt'
-            att_heads = cfg.MODEL.BILINEAR.HEAD,    # 8
-            att_mid_dim = [96, 48, 96], 
-            att_mid_drop = 0.1, 
-            bifeat_emb_act = 'RELU', 
-            bifeat_emb_drop = 0.1, 
-            ff_dropout = 0.5,
-            layer_num = 6)
-        """
-        
 
     def forward(self, **kwargs):
         att_feats = kwargs[cfg.PARAM.ATT_FEATS]
@@ -108,7 +76,7 @@ class XTransformer(BasicModel):
 
         att_feats = self.att_embed(att_feats)
         gx, encoder_out = self.encoder(att_feats, att_mask)
-        decoder_out = self.decoder(gx, seq, encoder_out, att_mask, seq_mask)
+        decoder_out = self.decoder(gx, seq, encoder_out, seq_mask, att_mask)
         return F.log_softmax(decoder_out, dim=-1)
 
     def get_logprobs_state(self, **kwargs):
@@ -124,7 +92,7 @@ class XTransformer(BasicModel):
         else:
             ys = torch.cat([state[0][0], wt.unsqueeze(1)], dim=1)
         seq_mask = subsequent_mask(ys.size(1)).to(encoder_out.device).type(torch.cuda.FloatTensor)[:, -1, :].unsqueeze(1)
-        decoder_out = self.decoder(gx, ys[:, -1].unsqueeze(-1), encoder_out, att_mask, seq_mask, p_att_feats, True).squeeze(1)
+        decoder_out = self.decoder(gx, ys[:, -1].unsqueeze(-1), encoder_out, seq_mask, att_mask, p_att_feats, True).squeeze(1)
         
         logprobs = F.log_softmax(decoder_out, dim=-1)
         return logprobs, [ys.unsqueeze(0)]
@@ -183,7 +151,7 @@ class XTransformer(BasicModel):
                 candidate_logprob = seq_mask * candidate_logprob + old_seq_logprob * (1 - seq_mask)
 
             selected_idx, selected_logprob = self.select(batch_size, beam_size, t, candidate_logprob)
-            selected_beam = selected_idx / candidate_logprob.shape[-1]
+            selected_beam = selected_idx // candidate_logprob.shape[-1]
             selected_words = selected_idx - selected_beam * candidate_logprob.shape[-1]
 
             self.decoder.apply_to_states(self._expand_state(batch_size, beam_size, cur_beam_size, selected_beam))
@@ -462,7 +430,7 @@ class Decoder(nn.Module):
             p_att_feats.append((key, value2))
         return p_att_feats
 
-    def forward(self, gx, prev_output_tokens, encoder_out, att_mask, seq_mask=None, p_att_feats=None, precompute=False):
+    def forward(self, gx, prev_output_tokens, encoder_out, seq_mask=None, att_mask=None, p_att_feats=None, precompute=False):
         att_mask = att_mask.unsqueeze(1)
         
         # embed positions

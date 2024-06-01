@@ -74,15 +74,12 @@ class EnsembleTester(object):
             if self.args.model_types is None:
                 tmp_type = cfg.MODEL.TYPE
             else:
-                # VPNet VP_AoA VP_UPDOWN
                 tmp_type = self.args.model_types[i]
-            # tmp = models.create(cfg.MODEL.TYPE)
             tmp = models.create(tmp_type)
             tmp = torch.nn.DataParallel(tmp).cuda()
             tmp_snapshot_file = os.path.join(_model_folders[i],
                                                "snapshot",
                                                "caption_model_"+str(_model_resumes[i])+".pth")
-            # print('sub model loaded from %s' % tmp_snapshot_file)
             self.logger.info('sub model loaded from %s' % tmp_snapshot_file)
             tmp.load_state_dict(torch.load(tmp_snapshot_file,
                                            map_location=lambda storage, loc: storage))
@@ -91,13 +88,10 @@ class EnsembleTester(object):
         if self.args.weights is not None:
             weights = [float(_) for _ in self.args.weights]
         
-        """
-        if 'Transformer' in self.args.model_types[0]:
+        if 'Transformer' in self.args.model_types[0] or 'PureT' in self.args.model_types[0]:
             model = AttEnsembleTransformer(_models, weights=weights)
         else:
             model = AttEnsembleModel(_models, weights=weights)
-        """
-        model = AttEnsembleTransformer(_models, weights=weights)
         self.model = torch.nn.DataParallel(model).cuda()
         # self.model.eval()
 

@@ -1,9 +1,8 @@
-# PureT
-Implementation of __End-to-End Transformer Based Model for Image Captioning__ [[PDF/AAAI]](https://ojs.aaai.org/index.php/AAAI/article/view/20160) [[PDF/Arxiv]](https://arxiv.org/abs/2203.15350) [AAAI 2022]
+# ImageCaptioning-Verbose
+PyTorch Implementation for Image Captioning.
+
 
 __This repo is a version that uses pre-extracted features for training and testing.__
-
-![architecture](./imgs/architecture.png)
 
 ## Requirements (Our Main Enviroment)
 + Python 3.7.4
@@ -25,7 +24,9 @@ The necessary files in training and evaluation are saved in __`mscoco`__ folder,
 ```
 mscoco/
 |--feature/
-    |--COCO_SwinL_Feats/
+    |--COCO_SwinL_Feats/ # Grid Features, for PureT
+       |--*.npz
+    |--COCO_UpDown_10_100_Feats/ # Region Features, for UpDown, XLAN, XTransformer, ...
        |--*.npz
 |--misc/
 |--sent/
