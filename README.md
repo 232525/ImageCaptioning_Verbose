@@ -1,16 +1,21 @@
 # ImageCaptioning-Verbose
 PyTorch Implementation for Image Captioning.
-
+- [x] PureT
+- [x] XLAN and XTransformer
+- [ ] UpDown
+- [ ] M2 Transformer
 
 __This repo is a version that uses pre-extracted features for training and testing.__
 
 ## Requirements (Our Main Enviroment)
-+ Python 3.7.4
-+ PyTorch 1.5.1
-+ TorchVision 0.6.0
++ Python 3.10.11
++ PyTorch 1.13.1
++ TorchVision 0.14.1 
 + [coco-caption](https://github.com/tylin/coco-caption)
 + numpy
 + tqdm
+
+Note: Also supports earlier PyTorch versions, such as 1.5.1. For newer version (>2.0), we have not verified!
 
 ## Preparation
 ### 1. coco-caption preparation
