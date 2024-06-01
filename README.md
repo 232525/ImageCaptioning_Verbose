@@ -1,11 +1,11 @@
 # ImageCaptioning-Verbose
-PyTorch Implementation for Image Captioning.
-- [x] PureT
-- [x] XLAN and XTransformer
-- [ ] UpDown
-- [ ] M2 Transformer
+PyTorch implementation for Image Captioning, supporting single or multi-gpus training, and inference with a single model or ensemble of multiple models.
 
 __This repo is a version that uses pre-extracted features for training and testing.__
+- [x] PureT: [[Paper]](https://arxiv.org/abs/2203.15350), [[Source Code]](https://github.com/232525/PureT)
+- [x] XLAN and XTransformer: [[Paper]](https://arxiv.org/abs/2003.14080), [[Source Code]](https://github.com/JDAI-CV/image-captioning)
+- [ ] UpDown
+- [ ] M2 Transformer
 
 ## Requirements (Our Main Enviroment)
 + Python 3.10.11
@@ -91,3 +91,8 @@ If you find this repo useful, please consider citing (no obligation at all):
 
 ## Acknowledgements
 This repository is based on [JDAI-CV/image-captioning](https://github.com/JDAI-CV/image-captioning), [ruotianluo/self-critical.pytorch](https://github.com/ruotianluo/self-critical.pytorch) and [microsoft/Swin-Transformer](https://github.com/microsoft/Swin-Transformer).
+
+TODO:
+- [ ] Details of data preparation
+- [ ] More datasets supported
+- [ ] More approachs supported
