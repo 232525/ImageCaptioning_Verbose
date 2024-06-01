@@ -27,6 +27,7 @@ Evaluation codes for MS COCO caption generation.
 - meteor: Meteor evaluation codes
 - rouge: Rouge-L evaluation codes
 - cider: CIDEr evaluation codes
+- ciderR: CIDEr-R evaluation codes
 - spice: SPICE evaluation codes
 - wmd: Word Mover's Distance evaluation codes
 
@@ -54,6 +55,7 @@ You can also check out [ruotianluo/self-critical.pytorch/eval_multi.py](https://
 - Meteor: [Project page](http://www.cs.cmu.edu/~alavie/METEOR/) with related publications. We use the latest version (1.5) of the [Code](https://github.com/mjdenkowski/meteor). Changes have been made to the source code to properly aggreate the statistics for the entire corpus.
 - Rouge-L: [ROUGE: A Package for Automatic Evaluation of Summaries](http://anthology.aclweb.org/W/W04/W04-1013.pdf)
 - CIDEr: [CIDEr: Consensus-based Image Description Evaluation](http://arxiv.org/pdf/1411.5726.pdf)
+- CIDEr-R: [CIDEr-R: Robust Consensus-based Image Description Evaluation](https://aclanthology.org/2021.wnut-1.39.pdf)
 - SPICE: [SPICE: Semantic Propositional Image Caption Evaluation](https://arxiv.org/abs/1607.08822)
 - WMD: [From word embeddings to document distances](http://proceedings.mlr.press/v37/kusnerb15.html) (original metric publication) and [Re-evaluating Automatic Metrics for Image Captioning](http://aclweb.org/anthology/E17-1019) (publication with metric adapted for caption generation)
 
