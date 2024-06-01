@@ -1,0 +1,4 @@
+[INFO: 2024-06-01 15:31:52,956] ######## Epoch 62 ########
+[INFO: 2024-06-01 15:31:52,957] {'Bleu_1': 0.8086920183869452, 'Bleu_2': 0.6577457523938891, 'Bleu_3': 0.5153264421901531, 'Bleu_4': 0.3967899478753024, 'METEOR': 0.29534760757870376, 'ROUGE_L': 0.5909645799576047, 'CIDEr': 1.3279842681794274, 'SPICE': 0.23418843664635774}
+[INFO: 2024-06-02 00:22:28,778] sub model loaded from experiments/experiments_XLAN/xtransformer_rl/snapshot/caption_model_62.pth
+[INFO: 2024-06-02 00:22:30,389] sub model loaded from experiments/experiments_XLAN/xtransformer_rl/snapshot/caption_model_62.pth
