@@ -92,22 +92,28 @@ class DataPreparation:
         token_counter = {} 
         # 按照karpathy split进行划分
         for _data in tqdm(all_data):
+            _file_name = _data['filename'] # ***.jpg
+            if _data.get('cocoid', None) is not None:
+                _id = _data['cocoid']
+            else:
+                _id = int(_file_name.split('.')[0])
+            # 统计词频
             for _sent in _data['sentences']:
                 for _token in _sent['tokens']:
                     token_counter[_token] = token_counter.get(_token, 0) + 1
             if _data['split'] in ['train', 'restval']:
                 self.train_split.append(_data)
-                self.train_ids.append(_data['imgid'])
+                self.train_ids.append(_id)
                 # # 统计train set词频
                 # for _sent in _data['sentences']:
                 #     for _token in _sent['tokens']:
                 #         token_counter[_token] = token_counter.get(_token, 0) + 1
             elif _data['split'] == 'val':
                 self.val_split.append(_data)
-                self.val_ids.append(_data['imgid'])
+                self.val_ids.append(_id)
             elif _data['split'] == 'test':
                 self.test_split.append(_data)
-                self.test_ids.append(_data['imgid'])
+                self.test_ids.append(_id)
             else:
                 pass
         
