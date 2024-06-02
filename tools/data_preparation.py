@@ -154,7 +154,7 @@ class DataPreparation:
         with open(self.txt_vocabulary_file, 'w') as f:
             for count, token in self.ct:
                 if count >= 6:
-                    f.write(str(token) + f" {count}" + '\n')
+                    f.write(str(token) + '\n')
                     self.token2index[str(token)] = index
                     final_token.append((index, str(token)))
                     index += 1
