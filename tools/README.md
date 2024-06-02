@@ -52,8 +52,14 @@ python create_feats.py \
     --outfolder preparation_output/mscoco/feature/COCO_UpDown_10_100_Feats
 ```
 
-### 2.1.2 SwinTransformer Grid Features
+#### 2.1.2 SwinTransformer Grid Features
 ......
+
+If you want to extract ViT Grid Features or CLIP Grid Features, the processing is also similar to the above.
+
+#### 2.1.3 Others
+Ref to [facebookresearch/grid-feats-vqa](https://github.com/facebookresearch/grid-feats-vqa)
+
 
 ## 3. Flickr30K
 ``` bash
@@ -89,3 +95,21 @@ UpDown Region Features for Flickr30K datasets can be download from [kuanghuei/SC
 ## 4. NoCaps: a evaluation benchmark
 
 UpDown Region Features for NoCaps datasets can be download from [here](https://nocaps.org/updown-baseline/setup_dependencies.html).
+
+And then convert them to `.npz` files:
+```python
+import h5py
+import numpy as np
+import os
+
+file = h5py.File('./nocaps_val_vg_detector_features_adaptive.h5', 'r')
+feats_folder = "YOUR_SAVE_PATH"
+for i in range(4500):
+    feat = file['features'][i]
+    image_id = file['image_id'][i]
+    num_boxes = file['num_boxes'][i]
+    feat = feat.reshape((num_boxes, -1))
+    print(feat.shape, image_id, num_boxes)
+    
+    np.savez_compressed(os.path.join(feats_folder, str(image_id)), feat=feat)
+```
