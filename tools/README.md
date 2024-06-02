@@ -55,6 +55,8 @@ python create_feats.py \
 #### 2.1.2 SwinTransformer Grid Features
 ......
 
+You can also download our pre-extracted features from [百度网盘](https://pan.baidu.com/s/1tyXGJx50sllS-zylN62ZAw)(提取码: hryh)
+
 If you want to extract ViT Grid Features or CLIP Grid Features, the processing is also similar to the above.
 
 #### 2.1.3 Others
