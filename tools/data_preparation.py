@@ -150,7 +150,7 @@ class DataPreparation:
         self.txt_vocabulary_file = f'{self.args.save_path}/txt/{self.args.dataset_name}_vocabulary.txt'
 
         # others
-        self.bad_tokens_file = f'{self.args.save_path}/txt/coco_bad_token.txt'
+        self.bad_tokens_file = f'{self.args.save_path}/txt/{self.args.dataset_name}_bad_token.txt'
 
     def save_txt_files(self, ):
         index = 1

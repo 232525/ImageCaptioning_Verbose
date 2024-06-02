@@ -75,7 +75,7 @@ preparation_output/flickr30k/
 │   ├── flickr30k_train_input.pkl
 │   └── flickr30k_train_target.pkl
 └── txt
-    ├── coco_bad_token.txt
+    ├── flickr30k_bad_token.txt
     ├── flickr30k_test_image_id.txt
     ├── flickr30k_train_image_id.txt
     ├── flickr30k_val_image_id.txt
