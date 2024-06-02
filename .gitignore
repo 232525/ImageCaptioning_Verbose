@@ -11,3 +11,8 @@ coco_caption/pycocoevalcap/spice/lib/stanford-corenlp-3.6.0.jar
 coco_caption/pycocoevalcap/spice/tmp/
 *.pth
 /data/temp/tmp*
+tools/karpathy_split/*.json
+tools/preparation_output/
+Offline*.txt
+Online*.txt
+result_*.json
