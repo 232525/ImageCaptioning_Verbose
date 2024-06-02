@@ -128,11 +128,11 @@ class DataPreparation:
     def name_output_files(self,):
         # misc/
         cnt_val, cnt_test = len(self.val_split), len(self.test_split)
-        if cnt_val > 1000:
+        if cnt_val >= 1000:
             cnt_val_ = str(cnt_val // 1000) + "k"
         else:
             cnt_val_ = str(cnt_val)
-        if cnt_test > 1000:
+        if cnt_test >= 1000:
             cnt_test_ = str(cnt_test // 1000) + "k"
         else:
             cnt_test_ = str(cnt_test)
