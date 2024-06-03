@@ -16,3 +16,4 @@ tools/preparation_output/
 Offline*.txt
 Online*.txt
 result_*.json
+log.txt
